@@ -8,7 +8,7 @@ When you type a command incorrectly, don't _say_ 'doh', _type_ it!
 For PoShdoh to run, your execution policy must be lowered. So run this in an admin elevated PowerShell to install:
 
 	Set-ExecutionPolicy RemoteSigned
-	iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/mattparkes/PoShdoh/master/Install-Thedoher.ps1'))
+	iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/danielDevelops/PoShdoh/master/Install-Thedoher.ps1'))
 
 ## Usage:
 

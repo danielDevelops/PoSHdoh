@@ -9,7 +9,7 @@ $pfk = (Join-Path $env:temp "poshdoh.zip")
 md $dst -ea silentlycontinue
 
 [Net.ServicePointManager]::SecurityProtocol = "tls12"
-Invoke-WebRequest 'https://github.com/mattparkes/PoShdoh/archive/master.zip' -OutFile $pfk
+Invoke-WebRequest 'https://github.com/danielDevelops/PoShdoh/archive/master.zip' -OutFile $pfk
 
 $shell = New-Object -ComObject Shell.Application; $shell.Namespace($dst).copyhere(($shell.NameSpace($pfk)).items(),20)
 
