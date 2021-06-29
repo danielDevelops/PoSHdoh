@@ -1,11 +1,11 @@
-﻿Function Invoke-TheFuck {
+﻿Function Invoke-Thedoh {
 <#
 	.SYNOPSIS
-	Powershell Implementation of 'thefuck' https://github.com/nvbn/thefuck
+	Powershell Implementation of 'thedoh' https://github.com/nvbn/thedoh
 	.DESCRIPTION
 	Uses Get-History and edits your last command to fix common mistakes.
 	.EXAMPLE
-	Fuck
+	doh
 #>
 [CmdletBinding()] param(
 	[Parameter(Mandatory=$False, ValueFromPipeline=$False, ValueFromPipelineByPropertyName=$True)]
@@ -22,7 +22,7 @@
 		try {
 			$lastcommand = (Get-History -Count $cmditeration -ea SilentlyContinue)[0]
 		} catch {
-			throw "Cannot fuck without a previous command"
+			throw "Cannot doh without a previous command"
 		}
 		
 		$splitcmd = $lastcommand.CommandLine.Split(' ')[0]
@@ -34,16 +34,16 @@
 		$aliasres = (get-alias $splitcmd -ea ignore).ResolvedCommand.Name
 		
 	} until (
-		( ($lastcommand.CommandLine -notmatch "Invoke-TheFuck") -and ($aliasres -notmatch "Invoke-TheFuck") -and ($lastcommand.CommandLine -notmatch "fuck!") ) -or ($lastcommand.id -eq 1)
+		( ($lastcommand.CommandLine -notmatch "Invoke-Thedoh") -and ($aliasres -notmatch "Invoke-Thedoh") -and ($lastcommand.CommandLine -notmatch "doh!") ) -or ($lastcommand.id -eq 1)
 	)
 	
-	## THE LOOP STOPS AT THE FIRST COMMAND TO PREVENT AN INFINITE LOOP  - IF THAT -EQ FUCK THEN BREAK
-	if ( ($lastcommand.CommandLine -match "Invoke-TheFuck") -or ($aliasres -match "Invoke-TheFuck") -or ($lastcommand.CommandLine -match "fuck!") ) { throw "No valid commands found" }
+	## THE LOOP STOPS AT THE FIRST COMMAND TO PREVENT AN INFINITE LOOP  - IF THAT -EQ doh THEN BREAK
+	if ( ($lastcommand.CommandLine -match "Invoke-Thedoh") -or ($aliasres -match "Invoke-Thedoh") -or ($lastcommand.CommandLine -match "doh!") ) { throw "No valid commands found" }
 	
-	Write-Verbose "Fucking command: $lastcommand"
+	Write-Verbose "dohing command: $lastcommand"
 	
 	## GET THE STATIC DICTIONARY
-	$dictloc = ( Join-Path (Split-Path (Get-Module -ListAvailable PoShFuck).Path) StaticDict.xml )
+	$dictloc = ( Join-Path (Split-Path (Get-Module -ListAvailable PoShdoh).Path) StaticDict.xml )
 	if ( Test-Path $dictloc ) {
 		Write-Verbose "Loading static dictionary"
 		$staticdict = Import-Clixml $dictloc
@@ -51,7 +51,7 @@
 		$staticdict = @{}
 	}
 	
-	$newcommand = FuckFix -lastcommand $lastcommand.CommandLine -splitcmd $splitcmd -preverror $preverror -staticdict $staticdict
+	$newcommand = dohFix -lastcommand $lastcommand.CommandLine -splitcmd $splitcmd -preverror $preverror -staticdict $staticdict
 	
 	## CHOOSE WHETHER TO EXECUTE THE FIXED COMMAND
 	
@@ -79,38 +79,38 @@
 	
 }
 
-Function Get-FuckingHelp {
+Function Get-dohingHelp {
 <#
 	.SYNOPSIS
 	Googles your last error message.
 	.DESCRIPTION
 	Googles your last error message.
 	.EXAMPLE
-	Get-FuckingHelp
+	Get-dohingHelp
 #>
 	try {
 		$preverr = ($global:Error[0].ToString() -split [regex]::Escape([environment]::newline))
 		Start-Process "http://www.google.com/search?q=PowerShell $preverr"
 	} catch {
-		throw "WTF are you doing? Cannot Get-FuckingHelp without a previous error."
+		throw "WTF are you doing? Cannot Get-dohingHelp without a previous error."
 	}
 }
 
-function fuck! {
+function doh! {
 [CmdletBinding()] param()
-	Invoke-TheFuck -Force
+	Invoke-Thedoh -Force
 }
 
-function Get-Fucked {
+function Get-dohed {
 [CmdletBinding()] param()
-	Import-Clixml ( Join-Path (Split-Path (Get-Module -ListAvailable PoShFuck).Path) StaticDict.xml )
+	Import-Clixml ( Join-Path (Split-Path (Get-Module -ListAvailable PoShdoh).Path) StaticDict.xml )
 }
 
 ##############################################
 ##			PRIVATE FUNCTIONS				##
 ##############################################
 
-Function FuckFix {
+Function dohFix {
 [CmdletBinding()] param(
 	[string]$lastcommand,
 	[string]$splitcmd,
@@ -129,7 +129,7 @@ Function FuckFix {
 	}
 	
 	if ( $preverror -match "is not recognized as a|the name of a cmdlet, function" ) {
-		$icf = IsCommandFucked -Command $splitcmd
+		$icf = IsCommanddohed -Command $splitcmd
 			if ( $icf -ne $false ) { 
 				$newcommand = $newcommand -replace $splitcmd, $icf
 			}
@@ -137,18 +137,18 @@ Function FuckFix {
 	
 	# Checking if the issue is with the parameter name
 	if ( (Get-Command $splitcmd -ea Ignore).CommandType -eq 'Application' ) {
-			$ipf  = IsExtParameterFucked -lastcommand $lastcommand -splitcmd $splitcmd
+			$ipf  = IsExtParameterdohed -lastcommand $lastcommand -splitcmd $splitcmd
 			if ( $ipf -ne $false ) {
 				$newcommand = $ipf
 			}
 	} else {
 		if ( $preverror -match 'A parameter cannot be found that matches parameter name' ) {
-			$fuckedParameter = ([regex]"'[^']*'").Matches($preverror)[0].Value
-			$fuckedParameter = $fuckedParameter.Replace("'","")
+			$dohedParameter = ([regex]"'[^']*'").Matches($preverror)[0].Value
+			$dohedParameter = $dohedParameter.Replace("'","")
 			$CorrectedCommand = $newcommand.Split(' ')[0]
-			$ipf  = IsParameterFucked -Command $CorrectedCommand -Parameter $fuckedParameter
+			$ipf  = IsParameterdohed -Command $CorrectedCommand -Parameter $dohedParameter
 			if ( $ipf -ne $false ) { 
-				$newcommand = $newcommand -replace $fuckedParameter, $ipf
+				$newcommand = $newcommand -replace $dohedParameter, $ipf
 			}
 		}
 	}
@@ -173,8 +173,8 @@ Function FuckFix {
 	
 }
 
-function IsCommandFucked {
-## FIND WHETHER THE EXECUTABLE IS FUCKED
+function IsCommanddohed {
+## FIND WHETHER THE EXECUTABLE IS dohED
 
 [CmdletBinding()] param(
 	[string]$Command
@@ -195,7 +195,7 @@ function IsCommandFucked {
 	}
 }
 
-function GetFuckingCandidates {
+function GetdohingCandidates {
 [CmdletBinding()] param(
 	[string]$Command,
 	[array]$Candidates
@@ -306,7 +306,7 @@ function CommandAnagramExtApp {
 	
 	if ( $cmdlist -contains $Command ) { Write-Verbose "Command is correct"; return $Command }
 	
-	return GetFuckingCandidates -Command $Command -Candidates $cmdlist
+	return GetdohingCandidates -Command $Command -Candidates $cmdlist
 }
 
 function CommandAnagramCmdlet {
@@ -329,23 +329,23 @@ function CommandAnagramCmdlet {
 
 	if ( $verblist -contains $Command.Split('-')[0] ) {
 		Write-Verbose "Cmdlet verb is correct"
-		$usenoun = GetFuckingCandidates -Command $Command.Split('-')[1] -Candidates $nounlist
+		$usenoun = GetdohingCandidates -Command $Command.Split('-')[1] -Candidates $nounlist
 		return "$($Command.Split('-')[0])-$usenoun"
 	} else {
 		Write-Verbose "Cmdlet verb not found"
-		$useverb = GetFuckingCandidates -Command $Command.Split('-')[0] -Candidates $verblist
+		$useverb = GetdohingCandidates -Command $Command.Split('-')[0] -Candidates $verblist
 		return "$useverb-$($Command.Split('-')[1])"
 	}
 }
 
-function IsParameterFucked {	
+function IsParameterdohed {	
 [CmdletBinding()] param(
 		[string]$Command,
 		[string]$Parameter
 	)
 	
 	$Parameters = (GET-Command $Command).parameters.Keys
-	$result = GetFuckingCandidates -Command $Command -Candidates $Parameters
+	$result = GetdohingCandidates -Command $Command -Candidates $Parameters
 	if ($result -eq $Parameter) {
 		return $false
 	} else {
@@ -365,7 +365,7 @@ Function Fixgit {
 	return $lastcommand -replace $origcmd,$correctedcmd
 }
 
-Function IsExtParameterFucked {
+Function IsExtParameterdohed {
 [CmdletBinding()] param(
 	[string]$lastcommand,
 	[string]$splitcmd
@@ -379,7 +379,7 @@ Function IsExtParameterFucked {
 }
 
 Export-ModuleMember *-*
-Export-ModuleMember fuck!
+Export-ModuleMember doh!
 
-Set-Alias -Scope global -Name "Fuck" -Value "Invoke-TheFuck"
-Set-Alias -Scope global -Name "WTF" -Value "Get-FuckingHelp"
+Set-Alias -Scope global -Name "doh" -Value "Invoke-Thedoh"
+Set-Alias -Scope global -Name "WTF" -Value "Get-dohingHelp"

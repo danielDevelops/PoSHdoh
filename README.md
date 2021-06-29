@@ -1,14 +1,14 @@
-# PoShFuck
-PowerShell implementation of "The Fuck" (https://github.com/nvbn/thefuck)
+# PoShdoh
+PowerShell implementation of "The F$#!" 
 
-When you type a command incorrectly, don't _say_ 'fuck', _type_ it!
+When you type a command incorrectly, don't _say_ 'doh', _type_ it!
 
 ## Installation:
 
-For PoShFuck to run, your execution policy must be lowered. So run this in an admin elevated PowerShell to install:
+For PoShdoh to run, your execution policy must be lowered. So run this in an admin elevated PowerShell to install:
 
 	Set-ExecutionPolicy RemoteSigned
-	iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/mattparkes/PoShFuck/master/Install-TheFucker.ps1'))
+	iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/mattparkes/PoShdoh/master/Install-Thedoher.ps1'))
 
 ## Usage:
 
@@ -23,9 +23,9 @@ We've all done this before...
 		+ CategoryInfo          : ObjectNotFound: (peng:String) [], CommandNotFoundException
 		+ FullyQualifiedErrorId : CommandNotFoundException
 
-PoShFuck can fix it.
+PoShdoh can fix it.
 
-	PS C:\> fuck
+	PS C:\> doh
 
 	Did you mean?
 	 PING -a 8.8.8.8
@@ -44,14 +44,14 @@ PoShFuck can fix it.
 
 ## Commands:
 
-- `fuck` (alias to `Invoke-TheFuck`)  
+- `doh` (alias to `Invoke-Thedoh`)  
 This is the command which mungs your last command and presents you with options to fix it.
 
-- `fuck!` (alias to `Invoke-TheFuck -Force`)  
+- `doh!` (alias to `Invoke-Thedoh -Force`)  
 This command will execute the recommended option without prompting the user.
 
-- `WTF` (alias to `Get-FuckingHelp`)  
+- `WTF` (alias to `Get-dohingHelp`)  
 Googles your last console error.
 
-- `Get-Fucked`  
-Prints the list of commands which you have used PoShFuck to correct previously.
+- `Get-dohed`  
+Prints the list of commands which you have used PoShdoh to correct previously.
